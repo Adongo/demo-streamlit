@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import streamlit as st
+from textblob import TextBlob
 
 def main():
     #scrape the shit
@@ -31,23 +32,18 @@ def main():
         data = pd.DataFrame(data=titles, columns=["Title"])
         return data
 
+    def calculate_sentiment_polarity(data):
+        blob = TextBlob(data)
+        return blob.sentiment.polarity
 
-   
+    
     st.title("demo data app")
     scraper = initialize_scraper()  
     data = [scrape_the_mf_titles(scraper),scrape_the_mf_hyperlinks(scraper)] 
     df = create_the_mf_titles_columns(data[0])
 
     df['links'] = pd.Series(data[1])
-
-
-    def add_more_stuff
-    
-
-
-    # transposed_df = df.T
-
-    # renamed = transposed_df.rename(columns={"0":"titles", "1":"links"}, axis='columns'
+    df['polarity_score'] = df['Title'].apply(calculate_sentiment_polarity)
 
     st.write(df)
 
